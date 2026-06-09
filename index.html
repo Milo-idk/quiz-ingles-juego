@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz de Tiempos Verbales en Inglés</title>
+    <style>
+        body { font-family: sans-serif; line-height: 1.6; max-width: 600px; margin: 20px auto; padding: 20px; background-color: #f4f4f9; }
+        .question-card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        button { display: block; width: 100%; padding: 10px; margin: 5px 0; cursor: pointer; border: 1px solid #ccc; border-radius: 4px; background: #fff; }
+        button:hover { background: #e0e0e0; }
+        .correct { background-color: #d4edda !important; border-color: #c3e6cb; }
+        .incorrect { background-color: #f8d7da !important; border-color: #f5c6cb; }
+        #score-board { margin-bottom: 20px; padding: 15px; background: #fff; border-radius: 8px; border: 1px solid #ddd; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <h1>Quiz de Tiempos Verbales</h1>
+
+    <div id="score-board">
+        <p>Correctas: <span id="correct-count">0</span> | Incorrectas: <span id="incorrect-count">0</span></p>
+        <h2 id="final-result"></h2>
+    </div>
+
+    <div id="quiz-container"></div>
+    
+    <script>
+        const questions = [
+            { q: "She _____ (eat) an apple every morning.", options: ["eats", "eat", "eating", "ate"], correct: "eats" },
+            { q: "They _____ (play) soccer yesterday.", options: ["played", "play", "are playing", "plays"], correct: "played" },
+            { q: "Look! It _____ (rain) right now.", options: ["is raining", "rains", "rained", "rain"], correct: "is raining" },
+            { q: "I _____ (finish) my homework already.", options: ["have finished", "finished", "finish", "am finishing"], correct: "have finished" },
+            { q: "At 8:00 PM last night, I _____ (read) a book.", options: ["was reading", "read", "readed", "have read"], correct: "was reading" },
+            { q: "Tomorrow, we _____ (visit) our grandparents.", options: ["will visit", "visit", "visited", "visiting"], correct: "will visit" },
+            { q: "By the time you arrive, I _____ (cook) dinner.", options: ["will have cooked", "will cook", "cooked", "am cooking"], correct: "will have cooked" },
+            { q: "How long _____ (you/live) in this city?", options: ["have you been living", "do you live", "are you living", "did you live"], correct: "have you been living" },
+            { q: "She _____ (study) for two hours before she took a break.", options: ["had been studying", "studied", "has studied", "was studying"], correct: "had been studying" },
+            { q: "If I _____ (be) you, I would take that job.", options: ["were", "am", "was", "been"], correct: "were" }
+        ];
+
+        const container = document.getElementById('quiz-container');
+        let correctCount = 0;
+        let incorrectCount = 0;
+        let answeredQuestions = 0;
+
+        // Función para mezclar un array
+        function shuffle(array) {
+            return array.sort(() => Math.random() - 0.5);
+        }
+
+        questions.forEach((item, index) => {
+            const div = document.createElement('div');
+            div.className = 'question-card';
+            div.innerHTML = `<p>${index + 1}. ${item.q}</p>`;
+            
+            // Mezclamos las opciones
+            const shuffledOptions = shuffle([...item.options]);
+            
+            shuffledOptions.forEach((opt) => {
+                const btn = document.createElement('button');
+                btn.textContent = opt;
+                btn.onclick = () => {
+                    const allBtns = div.querySelectorAll('button');
+                    allBtns.forEach(b => b.disabled = true);
+                    
+                    if (opt === item.correct) {
+                        btn.className = 'correct';
+                        correctCount++;
+                    } else {
+                        btn.className = 'incorrect';
+                        // Resaltar la respuesta correcta
+                        allBtns.forEach(b => {
+                            if (b.textContent === item.correct) b.className = 'correct';
+                        });
+                        incorrectCount++;
+                    }
+                    
+                    answeredQuestions++;
+                    document.getElementById('correct-count').textContent = correctCount;
+                    document.getElementById('incorrect-count').textContent = incorrectCount;
+                    
+                    if (answeredQuestions === questions.length) {
+                        const resultEl = document.getElementById('final-result');
+                        if (correctCount === questions.length) {
+                            resultEl.textContent = "¡Perfecto! Dominas los tiempos verbales.";
+                            resultEl.style.color = "green";
+                        } else if (correctCount > 5) {
+                            resultEl.textContent = "¡Buen trabajo! Tienes una buena base.";
+                            resultEl.style.color = "blue";
+                        } else {
+                            resultEl.textContent = "Necesitas practicar un poco más.";
+                            resultEl.style.color = "red";
+                        }
+                    }
+                };
+                div.appendChild(btn);
+            });
+            container.appendChild(div);
+        });
+    </script>
+</body>
+</html>
